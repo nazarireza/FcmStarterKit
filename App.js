@@ -6,26 +6,49 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import React, { Component } from 'react';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+import firebase from 'react-native-firebase';
 
-type Props = {};
-export default class App extends Component<Props> {
+export default class App extends Component {
+  componentDidMount() {
+    // (async () => {
+    //   const fcmToken = await firebase.messaging().getToken();
+
+    //   const enabled = await firebase.messaging().hasPermission();
+    //   if (!enabled) {
+    //     try {
+    //       await firebase.messaging().requestPermission();
+    //     } catch (error) {
+    //       console.warn(error);
+    //     }
+    //   }
+    //   else{
+    //     console.warn('Enable');
+    //   }
+    // })();
+
+    this.removeNotificationDisplayedListener = firebase
+      .notifications()
+      .onNotificationDisplayed((notification) => {
+        // Process your notification as required
+        // ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.
+      });
+    this.removeNotificationListener = firebase
+      .notifications()
+      .onNotification((notification) => {
+        // Process your notification as required
+      });
+  }
+
+  componentWillUnmount() {
+    this.removeNotificationDisplayedListener();
+    this.removeNotificationListener();
+}
+
   render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
-    );
+    return <View style={styles.container} />;
   }
 }
 
@@ -34,16 +57,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    backgroundColor: '#F5FCFF'
+  }
 });
